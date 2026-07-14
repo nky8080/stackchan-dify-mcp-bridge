@@ -1,0 +1,4 @@
+# Add actual dependencies used by mcp_pipe.py and example server scripts
+# Example:
+# fastmcp
+# requests
