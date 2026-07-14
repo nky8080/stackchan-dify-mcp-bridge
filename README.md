@@ -14,6 +14,17 @@ A lightweight MCP (Model Context Protocol) bridge that connects an M5Stack **Sta
 
 This repo focuses on the **software bridge only**. Hardware build details (StackChan assembly, custom helmet, etc.) for the Kanazawa tourism guide are documented on its Hackster.io project page, not here.
 
+## Architecture
+
+![Architecture diagram: XiaoZhi AI (MCP Client) connects to two parallel MCP Servers — StackChan, and mcp_pipe.py (Proxy), which relays over stdio to a use-case-specific MCP server (e.g. kanazawa_tourism.py), which in turn queries Dify's knowledge base.](./docs/architecture.png)
+
+XiaoZhi AI acts as the MCP Client and talks to two MCP Servers in parallel:
+
+- **StackChan** — handles the device's own reactions (e.g. mouth-sync animation)
+- **`mcp_pipe.py` (this repo)** — a generic proxy with no use-case-specific logic. It relays MCP requests over stdio to a subprocess, which is where you plug in your own server script (e.g. [`examples/kanazawa_tourism/kanazawa_tourism.py`](./examples/kanazawa_tourism/kanazawa_tourism.py)). That subprocess is what actually queries Dify and returns the response.
+
+Because all the use-case-specific logic lives in the subprocess script rather than in `mcp_pipe.py`, the bridge itself can be reused as-is for a different character, city, or Dify agent — only the subprocess script needs to change.
+
 ## Requirements
 
 - Python 3.10+
